@@ -22,7 +22,7 @@
             --color-teal-400: rgba(45, 166, 178, 1);
             --color-gray-400-rgb: 119, 124, 124;
             --color-teal-300-rgb: 50, 184, 198;
-            
+
             --color-background: var(--color-cream-50);
             --color-surface: var(--color-cream-100);
             --color-text: var(--color-slate-900);
@@ -101,6 +101,10 @@
 
         .set-label, .set-total {
             font-weight: 500;
+        }
+
+        .timer {
+            min-height: 110px;
         }
 
         .time-display {
@@ -195,15 +199,12 @@
 <body>
     <div class="timer-container">
         <h1>German Volume Training</h1>
-        
+
         <div class="set-display">
             <div class="set-label">Set</div>
             <div class="set-count" id="setCount">0</div>
             <div class="set-total">/ 10</div>
         </div>
-
-        <div class="time-display" id="timeDisplay">01:00</div>
-        <div class="timer-label" id="timerLabel">Rest Timer</div>
 
         <div class="controls">
             <button class="btn-primary" id="completeSetBtn">Complete Set</button>
@@ -211,6 +212,11 @@
         </div>
         <div class="controls" style="margin-top: 12px;">
             <button class="btn-secondary" id="resetAllBtn">Reset</button>
+        </div>
+
+        <div class="timer">
+            <div class="time-display" id="timeDisplay"></div>
+            <div class="timer-label" id="timerLabel" style="display: none;">Rest Timer</div>
         </div>
     </div>
 
@@ -234,7 +240,9 @@
         }
 
         function updateDisplay() {
-            timeDisplay.textContent = formatTime(timeRemaining);
+            if (isResting) {
+                timeDisplay.textContent = formatTime(timeRemaining);
+            }
             setCountDisplay.textContent = setCount;
         }
 
@@ -242,38 +250,45 @@
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
-            
+
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
-            
+
             oscillator.frequency.value = 800;
             oscillator.type = 'sine';
-            
+
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
+
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function enableCompleteSetBtns() {
+            completeSetBtn.disabled = false;
+            completeSetBtn.style.opacity = '1';
+            completeSetBtn.style.cursor = 'pointer';
         }
 
         function startRestTimer() {
             isResting = true;
             timeRemaining = 60;
+            timerLabel.style.display = 'block';
             updateDisplay();
             completeSetBtn.disabled = true;
             completeSetBtn.style.opacity = '0.5';
             completeSetBtn.style.cursor = 'not-allowed';
-            
+
             timerInterval = setInterval(() => {
                 timeRemaining--;
                 updateDisplay();
-                
+
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
+                    timeDisplay.textContent = '';
+                    timerLabel.style.display = 'none';
                     isResting = false;
-                    completeSetBtn.disabled = false;
-                    completeSetBtn.style.opacity = '1';
-                    completeSetBtn.style.cursor = 'pointer';
+                    enableCompleteSetBtns();
                     playBeep();
                 }
             }, 1000);
@@ -281,10 +296,10 @@
 
         function completeSet() {
             if (isResting) return;
-            
+
             setCount++;
             updateDisplay();
-            
+
             if (setCount >= 10) {
                 // Exercise complete
                 clearInterval(timerInterval);
@@ -304,10 +319,10 @@
             setCount = 0;
             timeRemaining = 60;
             isResting = false;
-            completeSetBtn.style.display = 'block';
-            completeSetBtn.disabled = false;
+            enableCompleteSetBtns();
             resetBtn.style.display = 'none';
-            timerLabel.textContent = 'Rest Timer';
+            timeDisplay.textContent = '';
+            timerLabel.style.display = 'none';
             updateDisplay();
         }
 
@@ -320,4 +335,3 @@
     </script>
 </body>
 </html>
-
