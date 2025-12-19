@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const GVTimerApp());
@@ -53,7 +53,6 @@ class _TimerPageState extends State<TimerPage> {
   int _timeRemaining = 60;
   bool _isResting = false;
   Timer? _timer;
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   String _formatTime(int seconds) {
     final mins = seconds ~/ 60;
@@ -62,16 +61,8 @@ class _TimerPageState extends State<TimerPage> {
   }
 
   Future<void> _playBeep() async {
-    try {
-      // Create a simple beep using a BytesSource with a generated tone
-      // For simplicity, we'll use a URL source with a data URL
-      await _audioPlayer.play(
-        UrlSource('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='),
-      );
-    } catch (e) {
-      // If audio fails, that's okay - just continue silently
-      debugPrint('Audio playback failed: $e');
-    }
+    // Play system sound (available on both iOS and Android)
+    await SystemSound.play(SystemSoundType.alert);
   }
 
   void _startRestTimer() {
@@ -124,7 +115,6 @@ class _TimerPageState extends State<TimerPage> {
   @override
   void dispose() {
     _timer?.cancel();
-    _audioPlayer.dispose();
     super.dispose();
   }
 

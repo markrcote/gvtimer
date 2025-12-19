@@ -68,7 +68,10 @@ app.*.map.json
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
-# Old Android app files
+# Android local properties
+android/local.properties
+
+# Old Android app files (no longer needed)
 /app/
 /gradle/
 gradlew
