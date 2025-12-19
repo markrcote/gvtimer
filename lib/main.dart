@@ -72,16 +72,23 @@ class _TimerPageState extends State<TimerPage> {
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      
       setState(() {
         _timeRemaining--;
       });
 
       if (_timeRemaining <= 0) {
         timer.cancel();
-        setState(() {
-          _isResting = false;
-        });
-        _playBeep();
+        if (mounted) {
+          setState(() {
+            _isResting = false;
+          });
+          _playBeep();
+        }
       }
     });
   }
