@@ -14,7 +14,9 @@ Built with Flutter for cross-platform support on Android and iOS.
 
 ## Prerequisites
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) (3.0.0 or higher)
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) (3.0.0 or higher) - **Required**
+  - Follow the [official Flutter installation guide](https://flutter.dev/docs/get-started/install) for your operating system
+  - Run `flutter doctor` to verify installation
 - For Android development:
   - Android Studio or Android SDK
   - Android device or emulator
@@ -23,9 +25,28 @@ Built with Flutter for cross-platform support on Android and iOS.
   - CocoaPods
   - iOS device or simulator
 
+## Getting Started
+
+This project has been converted from an Android-only app to a Flutter app. The original HTML/CSS/JS-based timer has been reimplemented as a native Flutter widget.
+
+### Project Structure
+
+```
+gvtimer/
+├── lib/
+│   └── main.dart          # Main Flutter app code
+├── android/               # Android-specific files
+├── ios/                   # iOS-specific files
+├── test/                  # Widget tests
+├── pubspec.yaml          # Flutter dependencies
+└── README.md
+```
+
 ## Building and Running
 
 ### Install Dependencies
+
+First, ensure Flutter is installed. Then get the project dependencies:
 
 ```bash
 flutter pub get
@@ -37,7 +58,11 @@ flutter pub get
 flutter run -d android
 ```
 
+Or use Android Studio to run the app.
+
 ### Run on iOS (macOS only)
+
+First, install CocoaPods dependencies:
 
 ```bash
 cd ios
@@ -45,6 +70,8 @@ pod install
 cd ..
 flutter run -d ios
 ```
+
+Or use Xcode to run the app.
 
 ### Build for Release
 
@@ -63,6 +90,7 @@ flutter build appbundle --release
 The bundle will be available at: `build/app/outputs/bundle/release/app-release.aab`
 
 #### iOS (macOS only)
+
 ```bash
 flutter build ios --release
 ```
@@ -80,6 +108,8 @@ open ios/Runner.xcworkspace
 flutter run
 ```
 
+Press `r` to hot reload, `R` to hot restart.
+
 ### Run Tests
 
 ```bash
@@ -91,6 +121,24 @@ flutter test
 ```bash
 flutter doctor
 ```
+
+This will check your Flutter installation and report any issues.
+
+### Analyze Code
+
+```bash
+flutter analyze
+```
+
+## Migration from Android App
+
+This app was previously an Android-only app that used a WebView to display an HTML/CSS/JS timer. It has been converted to a pure Flutter app with the following changes:
+
+- Removed WebView dependency
+- Reimplemented UI using Flutter widgets
+- Added cross-platform support for iOS
+- Simplified audio notifications using Flutter's SystemSound
+- Maintained all original functionality
 
 ## License
 
