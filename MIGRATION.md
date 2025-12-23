@@ -110,12 +110,16 @@ flutter build ios --release
 ### Before
 - Kotlin: 1.9.0
 - Android Gradle Plugin: 8.1.0
+- Gradle: 8.3
 - Compose BOM and libraries
 - Google Accompanist
 
 ### After
 - Flutter SDK: 3.0.0+
 - Dart SDK: 3.0.0+
+- Gradle: 8.7
+- Android Gradle Plugin: 8.1.1
+- Kotlin: 1.9.0
 - No external packages (uses Flutter built-ins)
 
 ## Lines of Code
