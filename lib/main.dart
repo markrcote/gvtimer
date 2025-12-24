@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 
 void main() {
@@ -55,6 +55,13 @@ class _TimerPageState extends State<TimerPage> {
   int _timeRemaining = 60;
   bool _isResting = false;
   Timer? _timer;
+  late final AudioPlayer _audioPlayer;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = AudioPlayer();
+  }
 
   String _formatTime(int seconds) {
     final mins = seconds ~/ 60;
@@ -63,8 +70,8 @@ class _TimerPageState extends State<TimerPage> {
   }
 
   Future<void> _playBeep() async {
-    // Play system sound (available on both iOS and Android)
-    await SystemSound.play(SystemSoundType.alert);
+    // Play a beep sound
+    await _audioPlayer.play(AssetSource('bell.wav'));
   }
 
   void _startRestTimer() {
@@ -124,6 +131,7 @@ class _TimerPageState extends State<TimerPage> {
   @override
   void dispose() {
     _timer?.cancel();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -145,7 +153,7 @@ class _TimerPageState extends State<TimerPage> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 35),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -157,7 +165,7 @@ class _TimerPageState extends State<TimerPage> {
                       color: textColor,
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 25),
                   // Set display
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -191,7 +199,7 @@ class _TimerPageState extends State<TimerPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   // Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -259,7 +267,7 @@ class _TimerPageState extends State<TimerPage> {
                   ),
                   // Timer display
                   SizedBox(
-                    height: 110,
+                    height: 100,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -276,7 +284,7 @@ class _TimerPageState extends State<TimerPage> {
                               letterSpacing: 0.05,
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 6),
                           Text(
                             'Exercise Complete',
                             style: TextStyle(
@@ -285,11 +293,11 @@ class _TimerPageState extends State<TimerPage> {
                             ),
                           ),
                         ] else if (_isResting) ...[
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 8),
                           Text(
                             _formatTime(_timeRemaining),
                             style: TextStyle(
-                              fontSize: 56,
+                              fontSize: 46,
                               fontWeight: FontWeight.w300,
                               color: textColor,
                               fontFeatures: const [
@@ -298,7 +306,7 @@ class _TimerPageState extends State<TimerPage> {
                               letterSpacing: 0.05,
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 4),
                           Text(
                             'Rest Timer',
                             style: TextStyle(
