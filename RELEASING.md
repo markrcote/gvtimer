@@ -30,52 +30,13 @@ git push origin main --tags
 
 ### 2. Configure signing
 
-The Play Store requires a signed release build. Configure signing in `app/build.gradle.kts` by adding a `signingConfigs` block, or pass the credentials on the command line.
-
-**Option A — `keystore.properties` file (recommended, keep out of version control):**
-
-Create `keystore.properties` in the project root (already in `.gitignore`):
+Ensure a `keystore.properties` file exists in the project root (already in `.gitignore`):
 
 ```properties
 storeFile=/path/to/release.keystore
 storePassword=...
 keyAlias=...
 keyPassword=...
-```
-
-Then add to `app/build.gradle.kts`:
-
-```kotlin
-val keystoreProperties = java.util.Properties().apply {
-    load(rootProject.file("keystore.properties").inputStream())
-}
-
-android {
-    signingConfigs {
-        create("release") {
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-        }
-    }
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-            // ...existing config...
-        }
-    }
-}
-```
-
-**Option B — command-line flags:**
-
-```bash
-./gradlew bundleRelease \
-  -Pandroid.injected.signing.store.file=/path/to/release.keystore \
-  -Pandroid.injected.signing.store.password=... \
-  -Pandroid.injected.signing.key.alias=... \
-  -Pandroid.injected.signing.key.password=...
 ```
 
 ### 3. Build the release bundle

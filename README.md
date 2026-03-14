@@ -6,7 +6,7 @@ An Android app for tracking [German Volume Training](https://www.t-nation.com/tr
 
 - Tracks sets completed out of 10
 - 60-second rest timer that starts automatically after each set
-- Audio beep when the rest period ends and the next set is ready
+- Distinct audio tones when the rest period ends and when all 10 sets are complete
 - Resets for the next exercise once all 10 sets are done
 - Supports light and dark themes
 
@@ -42,6 +42,7 @@ An Android app for tracking [German Volume Training](https://www.t-nation.com/tr
 ```bash
 ./gradlew assembleDebug     # debug build
 ./gradlew assembleRelease   # release build
+./gradlew bundleRelease     # Play Store bundle (.aab)
 ```
 
 ### Running on a device or emulator
@@ -71,6 +72,10 @@ $ANDROID_HOME/platform-tools/adb wait-for-device
 ### Making UI changes
 
 All timer logic and UI lives in a single file: `app/src/main/assets/index.html`. You can edit this file directly in any text editor — no Android-specific tooling required. After editing, rebuild and reinstall to see changes.
+
+## Releasing
+
+See [RELEASING.md](RELEASING.md) for Play Store release instructions.
 
 ## Architecture
 
