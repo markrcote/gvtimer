@@ -222,8 +222,8 @@
 
     <script>
         let setCount = 0;
-        const REST_SECONDS = 60;
-        const TARGET_SETS = 10;
+        let REST_SECONDS = 60;
+        let TARGET_SETS = 10;
         let timeRemaining = REST_SECONDS;
         let timerInterval = null;
         let isResting = false;
@@ -355,6 +355,24 @@
         completeSetBtn.addEventListener('click', completeSet);
         resetBtn.addEventListener('click', resetExercise);
         resetAllBtn.addEventListener('click', resetExercise);
+
+        // Secret debug mode: tap the title 5 times quickly to toggle 2 sets / 2-second timer
+        let debugMode = false;
+        let debugTapCount = 0;
+        let debugTapTimer = null;
+        document.querySelector('h1').addEventListener('click', () => {
+            debugTapCount++;
+            clearTimeout(debugTapTimer);
+            debugTapTimer = setTimeout(() => { debugTapCount = 0; }, 1500);
+            if (debugTapCount >= 5) {
+                debugTapCount = 0;
+                debugMode = !debugMode;
+                TARGET_SETS = debugMode ? 2 : 10;
+                REST_SECONDS = debugMode ? 2 : 60;
+                setTotalDisplay.textContent = TARGET_SETS;
+                resetExercise();
+            }
+        });
 
         // Initialize display
         updateDisplay();
