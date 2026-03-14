@@ -222,7 +222,8 @@
 
     <script>
         let setCount = 0;
-        let timeRemaining = 60; // 1 minute rest
+        const REST_SECONDS = 60;
+        let timeRemaining = REST_SECONDS;
         let timerInterval = null;
         let isResting = false;
 
@@ -272,7 +273,7 @@
 
         function startRestTimer() {
             isResting = true;
-            timeRemaining = 60;
+            timeRemaining = REST_SECONDS;
             timerLabel.style.display = 'block';
             updateDisplay();
             completeSetBtn.disabled = true;
@@ -317,7 +318,7 @@
         function resetExercise() {
             clearInterval(timerInterval);
             setCount = 0;
-            timeRemaining = 60;
+            timeRemaining = REST_SECONDS;
             isResting = false;
             enableCompleteSetBtns();
             resetBtn.style.display = 'none';
