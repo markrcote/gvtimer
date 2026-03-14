@@ -49,12 +49,18 @@ An Android app for tracking [German Volume Training](https://www.t-nation.com/tr
 **Android Studio:** Select a device (or create an emulator via **Device Manager**) and click **Run**.
 
 **Command line — start an emulator:**
+
+The Android SDK tools are not always on `PATH`. If `emulator` is not found, use the full path (typically `$ANDROID_HOME/emulator/emulator`):
+
 ```bash
 # List available AVDs
-emulator -list-avds
+$ANDROID_HOME/emulator/emulator -list-avds
 
 # Start one (replace <avd-name> with an AVD from the list above)
-emulator -avd <avd-name> &
+$ANDROID_HOME/emulator/emulator -avd <avd-name> &
+
+# Wait for the emulator to finish booting before installing
+$ANDROID_HOME/platform-tools/adb wait-for-device
 ```
 
 **Command line — install and run:**
