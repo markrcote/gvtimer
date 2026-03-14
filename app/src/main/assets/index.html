@@ -208,7 +208,7 @@
 
         <div class="controls">
             <button class="btn-primary" id="completeSetBtn">Complete Set</button>
-            <button class="btn-secondary" id="resetBtn" style="display: none;">Reset for Next Exercise</button>
+            <button class="btn-primary" id="resetBtn" style="display: none;">Reset for Next Exercise</button>
         </div>
         <div class="controls" style="margin-top: 12px;">
             <button class="btn-secondary" id="resetAllBtn">Reset</button>
@@ -309,8 +309,10 @@
                 clearInterval(timerInterval);
                 completeSetBtn.style.display = 'none';
                 resetBtn.style.display = 'block';
+                resetAllBtn.style.display = 'none';
                 timeDisplay.textContent = 'Done!';
                 timerLabel.textContent = 'Exercise Complete';
+                timerLabel.style.display = 'block';
                 playBeep();
             } else {
                 // Start rest timer
@@ -323,10 +325,13 @@
             setCount = 0;
             timeRemaining = REST_SECONDS;
             isResting = false;
+            completeSetBtn.style.display = '';
             enableCompleteSetBtns();
             resetBtn.style.display = 'none';
+            resetAllBtn.style.display = '';
             timeDisplay.textContent = '';
             timerLabel.style.display = 'none';
+            timerLabel.textContent = 'Rest Timer';
             updateDisplay();
         }
 
