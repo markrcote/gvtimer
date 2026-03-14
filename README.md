@@ -19,7 +19,13 @@ An Android app for tracking [German Volume Training](https://www.t-nation.com/tr
 ### Prerequisites
 
 - [Android Studio](https://developer.android.com/studio) (recommended), or Android SDK with command-line tools
-- JDK 17 or higher
+- JDK 17–21 (Java 22+ is not supported by the current Kotlin/Gradle tooling)
+
+  On Arch/Manjaro, install Java 21 and set it as the default:
+  ```bash
+  sudo pacman -S jdk21-openjdk
+  sudo archlinux-java set java-21-openjdk
+  ```
 
 ### Setup
 
