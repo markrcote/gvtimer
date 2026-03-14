@@ -203,7 +203,7 @@
         <div class="set-display">
             <div class="set-label">Set</div>
             <div class="set-count" id="setCount">0</div>
-            <div class="set-total">/ 10</div>
+            <div class="set-total">/ <span id="setTotal"></span></div>
         </div>
 
         <div class="controls">
@@ -223,12 +223,15 @@
     <script>
         let setCount = 0;
         const REST_SECONDS = 60;
+        const TARGET_SETS = 10;
         let timeRemaining = REST_SECONDS;
         let timerInterval = null;
         let isResting = false;
 
         const timeDisplay = document.getElementById('timeDisplay');
         const setCountDisplay = document.getElementById('setCount');
+        const setTotalDisplay = document.getElementById('setTotal');
+        setTotalDisplay.textContent = TARGET_SETS;
         const timerLabel = document.getElementById('timerLabel');
         const completeSetBtn = document.getElementById('completeSetBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -301,7 +304,7 @@
             setCount++;
             updateDisplay();
 
-            if (setCount >= 10) {
+            if (setCount >= TARGET_SETS) {
                 // Exercise complete
                 clearInterval(timerInterval);
                 completeSetBtn.style.display = 'none';
