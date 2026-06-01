@@ -35,12 +35,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            TimerNotificationReceiver.CHANNEL_ID,
-            "Timer Alerts",
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                TimerNotificationReceiver.CHANNEL_ID,
+                "Timer Alerts",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        }
     }
 
     private fun requestNotificationPermissionIfNeeded() {
