@@ -50,7 +50,7 @@ describe('initTimer state', () => {
 
     test('setTotalDisplay shows TARGET_SETS', () => {
         initTimer(dom, { targetSets: 5 });
-        expect(dom.setTotalDisplay.textContent).toBe(5);
+        expect(dom.setTotalDisplay.textContent).toBe('5');
     });
 
     test('completeSet increments setCount', () => {

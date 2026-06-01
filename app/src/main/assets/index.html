@@ -222,19 +222,23 @@
 
     <script src="timer.js"></script>
     <script>
+        const completeSetBtn = document.getElementById('completeSetBtn');
+        const resetBtn       = document.getElementById('resetBtn');
+        const resetAllBtn    = document.getElementById('resetAllBtn');
+
         const timer = initTimer({
-            timeDisplay:    document.getElementById('timeDisplay'),
+            timeDisplay:     document.getElementById('timeDisplay'),
             setCountDisplay: document.getElementById('setCount'),
             setTotalDisplay: document.getElementById('setTotal'),
-            timerLabel:     document.getElementById('timerLabel'),
-            completeSetBtn: document.getElementById('completeSetBtn'),
-            resetBtn:       document.getElementById('resetBtn'),
-            resetAllBtn:    document.getElementById('resetAllBtn'),
+            timerLabel:      document.getElementById('timerLabel'),
+            completeSetBtn,
+            resetBtn,
+            resetAllBtn,
         });
 
-        document.getElementById('completeSetBtn').addEventListener('click', () => timer.completeSet());
-        document.getElementById('resetBtn').addEventListener('click', () => timer.resetExercise());
-        document.getElementById('resetAllBtn').addEventListener('click', () => timer.resetExercise());
+        completeSetBtn.addEventListener('click', () => timer.completeSet());
+        resetBtn.addEventListener('click', () => timer.resetExercise());
+        resetAllBtn.addEventListener('click', () => timer.resetExercise());
 
         // Secret debug mode: tap the title 5 times quickly to toggle 2 sets / 2-second timer
         let debugMode = false;

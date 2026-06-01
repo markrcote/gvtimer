@@ -8,6 +8,7 @@ function playTones(tones) {
     const AudioCtx = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
     if (!AudioCtx) return;
     const audioContext = new AudioCtx();
+    const lastEnd = Math.max(...tones.map(t => t.start + t.duration));
     tones.forEach(({ freq, start, duration }) => {
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
@@ -20,6 +21,7 @@ function playTones(tones) {
         oscillator.start(audioContext.currentTime + start);
         oscillator.stop(audioContext.currentTime + start + duration);
     });
+    setTimeout(() => audioContext.close(), (lastEnd + 0.1) * 1000);
 }
 
 // Three ascending beeps: rest is over, time for the next set
@@ -58,13 +60,13 @@ function initTimer(els, opts = {}) {
     let isResting = false;
     let restEndTime = null;
 
-    els.setTotalDisplay.textContent = TARGET_SETS;
+    els.setTotalDisplay.textContent = String(TARGET_SETS);
 
     function updateDisplay() {
         if (isResting) {
             els.timeDisplay.textContent = formatTime(timeRemaining);
         }
-        els.setCountDisplay.textContent = setCount;
+        els.setCountDisplay.textContent = String(setCount);
     }
 
     function enableCompleteSetBtns() {
@@ -152,7 +154,7 @@ function initTimer(els, opts = {}) {
         if (restSeconds !== undefined) REST_SECONDS = restSeconds;
         if (targetSets !== undefined) {
             TARGET_SETS = targetSets;
-            els.setTotalDisplay.textContent = TARGET_SETS;
+            els.setTotalDisplay.textContent = String(TARGET_SETS);
         }
         resetExercise();
     }
