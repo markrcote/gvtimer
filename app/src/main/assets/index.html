@@ -220,159 +220,25 @@
         </div>
     </div>
 
+    <script src="timer.js"></script>
     <script>
-        let setCount = 0;
-        let REST_SECONDS = 60;
-        let TARGET_SETS = 10;
-        let timeRemaining = REST_SECONDS;
-        let timerInterval = null;
-        let isResting = false;
-        let restEndTime = null; // wall-clock ms when rest period ends
-
-        const timeDisplay = document.getElementById('timeDisplay');
-        const setCountDisplay = document.getElementById('setCount');
-        const setTotalDisplay = document.getElementById('setTotal');
-        setTotalDisplay.textContent = TARGET_SETS;
-        const timerLabel = document.getElementById('timerLabel');
         const completeSetBtn = document.getElementById('completeSetBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const resetAllBtn = document.getElementById('resetAllBtn');
+        const resetBtn       = document.getElementById('resetBtn');
+        const resetAllBtn    = document.getElementById('resetAllBtn');
 
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
+        const timer = initTimer({
+            timeDisplay:     document.getElementById('timeDisplay'),
+            setCountDisplay: document.getElementById('setCount'),
+            setTotalDisplay: document.getElementById('setTotal'),
+            timerLabel:      document.getElementById('timerLabel'),
+            completeSetBtn,
+            resetBtn,
+            resetAllBtn,
+        });
 
-        function updateDisplay() {
-            if (isResting) {
-                timeDisplay.textContent = formatTime(timeRemaining);
-            }
-            setCountDisplay.textContent = setCount;
-        }
-
-        function playTones(tones) {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            tones.forEach(({ freq, start, duration }) => {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.type = 'square';
-                oscillator.frequency.value = freq;
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + start);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + start + duration);
-                oscillator.start(audioContext.currentTime + start);
-                oscillator.stop(audioContext.currentTime + start + duration);
-            });
-        }
-
-        // Three ascending beeps: rest is over, time for the next set
-        function playRestEnd() {
-            playTones([
-                { freq: 220, start: 0.0,  duration: 0.12 },
-                { freq: 220, start: 0.15, duration: 0.12 },
-                { freq: 330, start: 0.32, duration: 0.35 },
-            ]);
-        }
-
-        // Rising arpeggio fanfare: all sets complete
-        function playExerciseComplete() {
-            playTones([
-                { freq: 196, start: 0.0,  duration: 0.15 },
-                { freq: 247, start: 0.18, duration: 0.15 },
-                { freq: 294, start: 0.36, duration: 0.15 },
-                { freq: 392, start: 0.54, duration: 0.6  },
-            ]);
-        }
-
-        function enableCompleteSetBtns() {
-            completeSetBtn.disabled = false;
-            completeSetBtn.style.opacity = '1';
-            completeSetBtn.style.cursor = 'pointer';
-        }
-
-        function startRestTimer() {
-            isResting = true;
-            timeRemaining = REST_SECONDS;
-            restEndTime = Date.now() + REST_SECONDS * 1000;
-            timerLabel.style.display = 'block';
-            updateDisplay();
-            completeSetBtn.disabled = true;
-            completeSetBtn.style.opacity = '0.5';
-            completeSetBtn.style.cursor = 'not-allowed';
-
-            if (typeof Android !== 'undefined') {
-                Android.scheduleNotification(REST_SECONDS);
-            }
-
-            timerInterval = setInterval(() => {
-                // Compute from wall clock so backgrounding can't cause drift
-                timeRemaining = Math.max(0, Math.round((restEndTime - Date.now()) / 1000));
-                updateDisplay();
-
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    // Cancel alarm if user stayed in-app and it hasn't fired yet
-                    if (typeof Android !== 'undefined') {
-                        Android.cancelNotification();
-                    }
-                    timeDisplay.textContent = '';
-                    timerLabel.style.display = 'none';
-                    isResting = false;
-                    enableCompleteSetBtns();
-                    // Skip chime if returning from background — notification already alerted the user
-                    if (Date.now() - restEndTime < 2000) {
-                        playRestEnd();
-                    }
-                }
-            }, 250);
-        }
-
-        function completeSet() {
-            if (isResting) return;
-
-            setCount++;
-            updateDisplay();
-
-            if (setCount >= TARGET_SETS) {
-                // Exercise complete
-                clearInterval(timerInterval);
-                completeSetBtn.style.display = 'none';
-                resetBtn.style.display = 'block';
-                resetAllBtn.style.display = 'none';
-                timeDisplay.textContent = 'Done!';
-                timerLabel.textContent = 'Exercise Complete';
-                timerLabel.style.display = 'block';
-                playExerciseComplete();
-            } else {
-                // Start rest timer
-                startRestTimer();
-            }
-        }
-
-        function resetExercise() {
-            clearInterval(timerInterval);
-            if (typeof Android !== 'undefined') {
-                Android.cancelNotification();
-            }
-            setCount = 0;
-            timeRemaining = REST_SECONDS;
-            restEndTime = null;
-            isResting = false;
-            completeSetBtn.style.display = '';
-            enableCompleteSetBtns();
-            resetBtn.style.display = 'none';
-            resetAllBtn.style.display = '';
-            timeDisplay.textContent = '';
-            timerLabel.style.display = 'none';
-            timerLabel.textContent = 'Rest Timer';
-            updateDisplay();
-        }
-
-        completeSetBtn.addEventListener('click', completeSet);
-        resetBtn.addEventListener('click', resetExercise);
-        resetAllBtn.addEventListener('click', resetExercise);
+        completeSetBtn.addEventListener('click', () => timer.completeSet());
+        resetBtn.addEventListener('click', () => timer.resetExercise());
+        resetAllBtn.addEventListener('click', () => timer.resetExercise());
 
         // Secret debug mode: tap the title 5 times quickly to toggle 2 sets / 2-second timer
         let debugMode = false;
@@ -385,15 +251,12 @@
             if (debugTapCount >= 5) {
                 debugTapCount = 0;
                 debugMode = !debugMode;
-                TARGET_SETS = debugMode ? 2 : 10;
-                REST_SECONDS = debugMode ? 2 : 60;
-                setTotalDisplay.textContent = TARGET_SETS;
-                resetExercise();
+                timer.setConfig({
+                    restSeconds: debugMode ? 2 : 60,
+                    targetSets:  debugMode ? 2 : 10,
+                });
             }
         });
-
-        // Initialize display
-        updateDisplay();
     </script>
 </body>
 </html>
