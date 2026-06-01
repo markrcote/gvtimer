@@ -7,7 +7,9 @@ Android app (Kotlin + Jetpack Compose) that wraps a self-contained HTML/CSS/JS t
 ## Key files
 
 - `app/src/main/assets/index.html` — the entire UI and timer logic
-- `app/src/main/java/com/markrcote/gvtimer/MainActivity.kt` — loads the web app in a WebView
+- `app/src/main/java/com/markrcote/gvtimer/MainActivity.kt` — loads the web app in a WebView, creates the notification channel, requests `POST_NOTIFICATIONS` permission
+- `app/src/main/java/com/markrcote/gvtimer/TimerBridge.kt` — `@JavascriptInterface` that JS calls to schedule/cancel the rest-end alarm via `AlarmManager`
+- `app/src/main/java/com/markrcote/gvtimer/TimerNotificationReceiver.kt` — `BroadcastReceiver` that posts the "Rest complete" notification when the alarm fires
 - `app/build.gradle.kts` — dependencies and version info (current: versionName `"1.3"`, versionCode `3`)
 - `RELEASING.md` — step-by-step Play Store release instructions
 
@@ -36,3 +38,11 @@ Signing requires `keystore.properties` in the project root (not committed).
 The app intentionally avoids native Android UI. The WebView loads `file:///android_asset/index.html` with JavaScript enabled. There is no network access; everything is local.
 
 `configChanges="orientation|screenSize|keyboardHidden"` on the activity prevents recreation on rotation, preserving timer state without needing to save/restore it explicitly.
+
+### Background notification
+
+The rest timer uses `Date.now()` as its reference (stored in `restEndTime`) rather than a decrement counter, so the displayed countdown corrects itself instantly when the user returns from another app.
+
+When a rest period starts, JS calls `Android.scheduleNotification(seconds)` on the `TimerBridge` interface, which schedules an exact `AlarmManager` alarm (`setExactAndAllowWhileIdle`). When the alarm fires, `TimerNotificationReceiver` posts the notification. If the user is still in the app when the timer hits zero, JS calls `Android.cancelNotification()` to suppress the alarm before it fires.
+
+Permissions used: `POST_NOTIFICATIONS` (runtime, Android 13+), `USE_EXACT_ALARM` (auto-granted on API 33+ for timer apps), `SCHEDULE_EXACT_ALARM` (fallback for API 31–32).

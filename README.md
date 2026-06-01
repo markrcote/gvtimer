@@ -6,6 +6,7 @@ An Android app for tracking [German Volume Training](https://www.t-nation.com/tr
 
 - Tracks sets completed out of 10
 - 60-second rest timer that starts automatically after each set
+- System notification when the rest period ends, even if you've switched to another app
 - Distinct audio tones when the rest period ends and when all 10 sets are complete
 - Resets for the next exercise once all 10 sets are done
 - Supports light and dark themes
@@ -80,6 +81,8 @@ See [RELEASING.md](RELEASING.md) for Play Store release instructions.
 ## Architecture
 
 The app is a thin Android wrapper (Kotlin + Jetpack Compose) around a self-contained HTML/CSS/JavaScript web app loaded from the local assets. The web app handles all timer logic and UI.
+
+The rest timer uses `Date.now()` as its reference so the displayed countdown stays accurate even if Android throttles the JavaScript interval while the app is in the background. When a rest period starts, the web app calls into native Kotlin code via a `JavascriptInterface` to schedule an exact `AlarmManager` alarm; a `BroadcastReceiver` fires the system notification when the alarm triggers. On Android 13 and above the app requests the `POST_NOTIFICATIONS` permission on first launch.
 
 ## Privacy
 

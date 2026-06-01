@@ -227,6 +227,7 @@
         let timeRemaining = REST_SECONDS;
         let timerInterval = null;
         let isResting = false;
+        let restEndTime = null; // wall-clock ms when rest period ends
 
         const timeDisplay = document.getElementById('timeDisplay');
         const setCountDisplay = document.getElementById('setCount');
@@ -294,25 +295,38 @@
         function startRestTimer() {
             isResting = true;
             timeRemaining = REST_SECONDS;
+            restEndTime = Date.now() + REST_SECONDS * 1000;
             timerLabel.style.display = 'block';
             updateDisplay();
             completeSetBtn.disabled = true;
             completeSetBtn.style.opacity = '0.5';
             completeSetBtn.style.cursor = 'not-allowed';
 
+            if (typeof Android !== 'undefined') {
+                Android.scheduleNotification(REST_SECONDS);
+            }
+
             timerInterval = setInterval(() => {
-                timeRemaining--;
+                // Compute from wall clock so backgrounding can't cause drift
+                timeRemaining = Math.max(0, Math.round((restEndTime - Date.now()) / 1000));
                 updateDisplay();
 
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
+                    // Cancel alarm if user stayed in-app and it hasn't fired yet
+                    if (typeof Android !== 'undefined') {
+                        Android.cancelNotification();
+                    }
                     timeDisplay.textContent = '';
                     timerLabel.style.display = 'none';
                     isResting = false;
                     enableCompleteSetBtns();
-                    playRestEnd();
+                    // Skip chime if returning from background — notification already alerted the user
+                    if (Date.now() - restEndTime < 2000) {
+                        playRestEnd();
+                    }
                 }
-            }, 1000);
+            }, 250);
         }
 
         function completeSet() {
@@ -339,8 +353,12 @@
 
         function resetExercise() {
             clearInterval(timerInterval);
+            if (typeof Android !== 'undefined') {
+                Android.cancelNotification();
+            }
             setCount = 0;
             timeRemaining = REST_SECONDS;
+            restEndTime = null;
             isResting = false;
             completeSetBtn.style.display = '';
             enableCompleteSetBtns();
