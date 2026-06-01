@@ -321,7 +321,10 @@
                     timerLabel.style.display = 'none';
                     isResting = false;
                     enableCompleteSetBtns();
-                    playRestEnd();
+                    // Skip chime if returning from background — notification already alerted the user
+                    if (Date.now() - restEndTime < 2000) {
+                        playRestEnd();
+                    }
                 }
             }, 250);
         }
