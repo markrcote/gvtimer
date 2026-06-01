@@ -7,9 +7,9 @@ function makeDom() {
         timeDisplay:     { textContent: '' },
         setCountDisplay: { textContent: '' },
         setTotalDisplay: { textContent: '' },
-        timerLabel:      { style: { display: '' }, textContent: '' },
+        timerLabel:      { style: { display: 'none' }, textContent: 'Rest Timer' },
         completeSetBtn:  { disabled: false, style: { opacity: '', cursor: '', display: '' } },
-        resetBtn:        { style: { display: '' } },
+        resetBtn:        { style: { display: 'none' } },
         resetAllBtn:     { style: { display: '' } },
     };
 }

@@ -91,7 +91,7 @@ function initTimer(els, opts = {}) {
 
         timerInterval = setInterval(() => {
             // Compute from wall clock so backgrounding can't cause drift
-            timeRemaining = Math.max(0, Math.round((restEndTime - now()) / 1000));
+            timeRemaining = Math.max(0, Math.ceil((restEndTime - now()) / 1000));
             updateDisplay();
 
             if (timeRemaining <= 0) {
