@@ -6,7 +6,8 @@ Android app (Kotlin + Jetpack Compose) that wraps a self-contained HTML/CSS/JS t
 
 ## Key files
 
-- `app/src/main/assets/index.html` — the entire UI and timer logic
+- `app/src/main/assets/timer.js` — all timer logic (`formatTime`, `initTimer`); testable in Node via injectable opts (`now`, `onRestEnd`, `onExerciseComplete`)
+- `app/src/main/assets/index.html` — UI shell and wiring block that calls `initTimer` and attaches event listeners
 - `app/src/main/java/com/markrcote/gvtimer/MainActivity.kt` — loads the web app in a WebView, creates the notification channel, requests `POST_NOTIFICATIONS` permission
 - `app/src/main/java/com/markrcote/gvtimer/TimerBridge.kt` — `@JavascriptInterface` that JS calls to schedule/cancel the rest-end alarm via `AlarmManager`
 - `app/src/main/java/com/markrcote/gvtimer/TimerNotificationReceiver.kt` — `BroadcastReceiver` that posts the "Rest complete" notification when the alarm fires
@@ -22,6 +23,17 @@ Android app (Kotlin + Jetpack Compose) that wraps a self-contained HTML/CSS/JS t
 ```
 
 Requires Android Studio or a local Android SDK installation.
+
+## JS tests
+
+Timer logic has Jest unit tests in `tests/timer.test.js`. Run with:
+
+```bash
+npm ci   # first time only
+npm test
+```
+
+CI runs these on every push and PR via `.github/workflows/js-tests.yml`.
 
 ## Releasing
 

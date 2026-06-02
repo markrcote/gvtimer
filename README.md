@@ -72,7 +72,16 @@ $ANDROID_HOME/platform-tools/adb wait-for-device
 
 ### Making UI changes
 
-All timer logic and UI lives in a single file: `app/src/main/assets/index.html`. You can edit this file directly in any text editor — no Android-specific tooling required. After editing, rebuild and reinstall to see changes.
+Timer logic lives in `app/src/main/assets/timer.js`; the UI shell and event-listener wiring live in `app/src/main/assets/index.html`. Both files can be edited in any text editor — no Android-specific tooling required. After editing, rebuild and reinstall to see changes.
+
+### Running JS tests
+
+```bash
+npm ci      # first time only
+npm test    # runs Jest suite in tests/
+```
+
+Tests cover `formatTime`, timer state transitions, and wall-clock behaviour (rest expiry, foreground chime, background-chime suppression). CI runs the same suite on every push and pull request.
 
 ## Releasing
 
