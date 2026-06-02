@@ -20,6 +20,8 @@ Android app (Kotlin + Jetpack Compose) that wraps a self-contained HTML/CSS/JS t
 ./gradlew assembleDebug     # debug build
 ./gradlew assembleRelease   # release build
 ./gradlew bundleRelease     # Play Store bundle (.aab)
+./gradlew installDebug      # install on connected device/emulator (does not launch)
+adb shell am start -n com.markrcote.gvtimer/.MainActivity  # launch after install
 ```
 
 Requires Android Studio or a local Android SDK installation.

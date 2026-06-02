@@ -68,6 +68,7 @@ $ANDROID_HOME/platform-tools/adb wait-for-device
 **Command line — install and run:**
 ```bash
 ./gradlew installDebug      # installs debug build on connected device/emulator
+adb shell am start -n com.markrcote.gvtimer/.MainActivity   # launches the app
 ```
 
 ### Making UI changes
