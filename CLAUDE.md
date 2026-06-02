@@ -45,4 +45,6 @@ The rest timer uses `Date.now()` as its reference (stored in `restEndTime`) rath
 
 When a rest period starts, JS calls `Android.scheduleNotification(seconds)` on the `TimerBridge` interface, which schedules an exact `AlarmManager` alarm (`setExactAndAllowWhileIdle`). When the alarm fires, `TimerNotificationReceiver` posts the notification. If the user is still in the app when the timer hits zero, JS calls `Android.cancelNotification()` to suppress the alarm before it fires.
 
+If the user is still in the app when the timer hits zero and the JS interval fires within 2 seconds of `restEndTime`, the rest-end chime plays normally. If the app was backgrounded and the interval resumes late (>2 s past `restEndTime`), the chime is suppressed — the system notification already alerted the user.
+
 Permissions used: `POST_NOTIFICATIONS` (runtime, Android 13+), `USE_EXACT_ALARM` (auto-granted on API 33+ for timer apps), `SCHEDULE_EXACT_ALARM` (fallback for API 31–32).

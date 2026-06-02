@@ -7,7 +7,7 @@ An Android app for tracking [German Volume Training](https://www.t-nation.com/tr
 - Tracks sets completed out of 10
 - 60-second rest timer that starts automatically after each set
 - System notification when the rest period ends, even if you've switched to another app
-- Distinct audio tones when the rest period ends and when all 10 sets are complete
+- Distinct audio tones when the rest period ends and when all 10 sets are complete; the rest-end tone is suppressed when returning from background (the notification already alerted you)
 - Resets for the next exercise once all 10 sets are done
 - Supports light and dark themes
 
