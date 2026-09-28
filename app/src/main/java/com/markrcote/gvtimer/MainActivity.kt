@@ -16,8 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.statusBarsPadding
 
 class MainActivity : ComponentActivity() {
 
@@ -57,18 +55,16 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TimerWebView() {
-    ProvideWindowInsets {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()) {
-            AndroidView(factory = { context ->
-                WebView(context).apply {
-                    webViewClient = WebViewClient()
-                    settings.javaScriptEnabled = true
-                    addJavascriptInterface(TimerBridge(context), "Android")
-                    loadUrl("file:///android_asset/index.html")
-                }
-            }, modifier = Modifier.fillMaxSize())
-        }
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .statusBarsPadding()) {
+        AndroidView(factory = { context ->
+            WebView(context).apply {
+                webViewClient = WebViewClient()
+                settings.javaScriptEnabled = true
+                addJavascriptInterface(TimerBridge(context), "Android")
+                loadUrl("file:///android_asset/index.html")
+            }
+        }, modifier = Modifier.fillMaxSize())
     }
 }
