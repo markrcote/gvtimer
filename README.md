@@ -46,6 +46,8 @@ An Android app for tracking [German Volume Training](https://www.t-nation.com/tr
 ./gradlew bundleRelease     # Play Store bundle (.aab)
 ```
 
+Release builds are signed only when `keystore.properties` is present (see [RELEASING.md](RELEASING.md)); without it they build unsigned. CI builds the debug APK and runs the JVM unit tests on every push and pull request.
+
 ### Running on a device or emulator
 
 **Android Studio:** Select a device (or create an emulator via **Device Manager**) and click **Run**.

@@ -11,7 +11,7 @@ Android app (Kotlin + Jetpack Compose) that wraps a self-contained HTML/CSS/JS t
 - `app/src/main/java/com/markrcote/gvtimer/MainActivity.kt` — loads the web app in a WebView, creates the notification channel, requests `POST_NOTIFICATIONS` permission
 - `app/src/main/java/com/markrcote/gvtimer/TimerBridge.kt` — `@JavascriptInterface` that JS calls to schedule/cancel the rest-end alarm via `AlarmManager`
 - `app/src/main/java/com/markrcote/gvtimer/TimerNotificationReceiver.kt` — `BroadcastReceiver` that posts the "Rest complete" notification when the alarm fires
-- `app/build.gradle.kts` — dependencies and version info (current: versionName `"1.3"`, versionCode `3`)
+- `app/build.gradle.kts` — dependencies and version info (current: versionName `"1.6"`, versionCode `6`)
 - `RELEASING.md` — step-by-step Play Store release instructions
 
 ## Build
@@ -37,6 +37,10 @@ npm test
 
 CI runs these on every push and PR via `.github/workflows/js-tests.yml`.
 
+## Android CI
+
+`.github/workflows/android-build.yml` runs `./gradlew assembleDebug testDebugUnitTest` on every push and PR, so Dependabot bumps that break the Gradle build (e.g. AGP or Compose BOM majors) fail visibly before merging.
+
 ## Releasing
 
 See `RELEASING.md` for the full Play Store release process. Summary:
@@ -45,7 +49,7 @@ See `RELEASING.md` for the full Play Store release process. Summary:
 3. `./gradlew bundleRelease` — output at `app/build/outputs/bundle/release/app-release.aab`
 4. Upload `.aab` to Google Play Console
 
-Signing requires `keystore.properties` in the project root (not committed).
+Signing requires `keystore.properties` in the project root (not committed). The build tolerates its absence — the release signing config is only created when the file exists — so CI and fresh checkouts can build debug without secrets; release builds there come out unsigned.
 
 ## Architecture notes
 
